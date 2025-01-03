@@ -57,7 +57,7 @@ const Navbar: React.FC = () => {
             gap: "15px",
           }}
         >
-          {["Home", "Ride", "Food and Beverage", "Merchandise"].map((item, index) => (
+          {["Home", "Ticket", "Ride", "Review"].map((item, index) => (
             <Menu.Item
               key={index}
               style={{
@@ -66,7 +66,12 @@ const Navbar: React.FC = () => {
                 fontSize: "15px",
               }}
             >
-              <a href={`/#${item.replace(" ", "")}`}>{item}</a>
+              {item === "Ride" ? (
+                // If it's the "Ride" item, use Link to navigate to /homerides
+                <Link to="/homerides">{item}</Link>
+              ) : (
+                <a href={`/#${item.replace(" ", "")}`}>{item}</a>
+              )}
             </Menu.Item>
           ))}
         </Menu>

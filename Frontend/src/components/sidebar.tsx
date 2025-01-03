@@ -8,6 +8,7 @@ import {
   ContainerOutlined, // Stock
   RocketOutlined, // Ride
 } from "@ant-design/icons";
+import { Link } from "react-router-dom"; // Import Link from react-router-dom
 
 const { Sider } = Layout;
 
@@ -37,10 +38,10 @@ const Sidebar: React.FC = () => {
           Merchandise
         </Menu.Item>
         <Menu.Item key="5" icon={<ContainerOutlined />}>
-          Stock
+          <Link to="/stock">Stock</Link> {/* Link to /stock */}
         </Menu.Item>
         <Menu.Item key="6" icon={<RocketOutlined />}>
-          Ride
+          <Link to="/rides">Ride</Link> {/* Link to /rides */}
         </Menu.Item>
       </Menu>
       <div style={{ position: "absolute", bottom: "20px", left: "0", right: "0", padding: "10px" }}>

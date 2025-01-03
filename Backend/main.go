@@ -3,7 +3,10 @@ package main
 import (
 	"backend/config"
 
+	
 	"backend/controller/ride"
+	
+
 
 	"github.com/gin-gonic/gin"
 
@@ -50,6 +53,15 @@ func main() {
 		router.GET("/bookings/count", controller.CountBookings)
 
 
+		// Define routes
+		router.POST("/stock", controller.CreateStock)
+		router.GET("/stock/:id", controller.GetStock)
+		router.GET("/stocks", controller.ListStocks)
+		router.DELETE("/stocks/:id", controller.DeleteStock)
+		router.PATCH("/stocks/:id", controller.UpdateStock)
+		router.GET("/stocks/count", controller.CountStocks)
+
+		r.Run(":3036")
 
 
 	// 	// Count จำนวน Ride

@@ -3,7 +3,7 @@ package controller
 import (
 	"backend/config"
 
-	"backend/entity/ride"
+	"backend/entity"
 
 	"net/http"
 

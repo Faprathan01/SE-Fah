@@ -5,5 +5,5 @@ export interface BookingInterface {
     Date?: string;
     Time?: string;
     RideID?: number;
-    Ride?: RideInterface
+    Ride?: RideInterface;
 }

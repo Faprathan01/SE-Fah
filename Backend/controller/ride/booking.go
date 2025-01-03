@@ -2,8 +2,10 @@ package controller
 
 import (
 	"net/http"
+	
 	"backend/config"
-	"backend/entity/ride"
+
+	"backend/entity"
 
 	"github.com/gin-gonic/gin"
 )

@@ -4,7 +4,8 @@ import (
 	"fmt"
 	//"time"
 
-	"backend/entity/ride"
+	"backend/entity"
+	
 
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -33,6 +34,8 @@ func SetupDatabase() {
 	db.AutoMigrate(
 		&entity.Ride{},           // Migrate the Ride entity
 		&entity.Booking{},        // Migrate the Booking entity
+		&entity.Stock{},
+	
 	)
 
 	// Add initial Ride data
@@ -87,5 +90,35 @@ func SetupDatabase() {
 	}
 
 	fmt.Println("Initial rides data inserted")
+	
+	// Add initial Stock data
+	stocks := []entity.Stock{
+		{
+			ProductName: "Souvenir 1",
+			Quantity:    100,
+			Price:       50.0,
+			ProductType: "Souvenir",
+		},
+		{
+			ProductName: "Popcorn",
+			Quantity:    500,
+			Price:       20.0,
+			ProductType: "Food",
+		},
+		{
+			ProductName: "Soda",
+			Quantity:    300,
+			Price:       30.0,
+			ProductType: "Drink",
+		},
+	}
 
+	// Insert initial data for stocks if not already present
+	for _, stock := range stocks {
+		db.FirstOrCreate(&stock, entity.Stock{ProductName: stock.ProductName})
+	}
+
+	fmt.Println("Initial rides and stock data inserted")
 }
+
+

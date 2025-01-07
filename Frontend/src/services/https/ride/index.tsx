@@ -53,15 +53,15 @@ async function CreateRide(data: RideInterface) {
 
 async function UpdateRide(id: number | undefined, data: RideInterface) {
     if (id === undefined) return false;
-  
+
     const requestOptions = {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
     };
-  
+
     return await fetchData(`${apiUrl}/rides/${id}`, requestOptions);
-  }
+}
   
 
 

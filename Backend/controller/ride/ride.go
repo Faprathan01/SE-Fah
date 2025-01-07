@@ -82,32 +82,35 @@ func DeleteRide(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Deleted successful"})
 }
 
-// PATCH /rides/:id
 func UpdateRide(c *gin.Context) {
-	var ride entity.Ride
+    var ride entity.Ride
+    rideID := c.Param("id")
 
-	rideID := c.Param("id")
+    db := config.DB()
+    // ตรวจสอบว่า ID มีอยู่ในฐานข้อมูลหรือไม่
+    result := db.First(&ride, rideID)
+    if result.Error != nil {
+        c.JSON(http.StatusNotFound, gin.H{"error": "Ride not found"})
+        return
+    }
 
-	db := config.DB()
-	result := db.First(&ride, rideID)
-	if result.Error != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "id not found"})
-		return
-	}
+    // รับข้อมูล JSON และตรวจสอบว่าไม่มีข้อผิดพลาด
+    if err := c.ShouldBindJSON(&ride); err != nil {
+        c.JSON(http.StatusBadRequest, gin.H{"error": "Unable to map payload", "details": err.Error()})
+        return
+    }
 
-	if err := c.ShouldBindJSON(&ride); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Bad request, unable to map payload"})
-		return
-	}
+    // อัพเดตข้อมูล
+    result = db.Save(&ride)
+    if result.Error != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update ride", "details": result.Error.Error()})
+        return
+    }
 
-	result = db.Save(&ride)
-	if result.Error != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Bad request"})
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{"message": "Updated successful"})
+    c.JSON(http.StatusOK, gin.H{"message": "Updated successfully", "data": ride})
 }
+
+
 
 // CountRides นับจำนวนเครื่องเล่นทั้งหมด
 func CountRides(c *gin.Context) {

@@ -36,8 +36,9 @@ func main() {
 		router.GET("/rides", controller.ListRides)
 		router.GET("/ride/:id", controller.GetRide)
 		router.POST("/rides", controller.CreateRide)
-		router.PATCH("/rides", controller.UpdateRide)
+		router.PATCH("/rides/:id", controller.UpdateRide)
 		router.DELETE("/rides/:id", controller.DeleteRide)
+		router.GET("/rides/count", controller.CountRides)
 
 		// กำหนดเส้นทางสำหรับการสร้างการจอง
 		router.POST("/bookings", controller.CreateBooking)
@@ -53,19 +54,17 @@ func main() {
 		router.GET("/bookings/count", controller.CountBookings)
 
 
-		// Define routes
-		router.POST("/stock", controller.CreateStock)
-		router.GET("/stock/:id", controller.GetStock)
-		router.GET("/stocks", controller.ListStocks)
-		router.DELETE("/stocks/:id", controller.DeleteStock)
-		router.PATCH("/stocks/:id", controller.UpdateStock)
-		router.GET("/stocks/count", controller.CountStocks)
+		// // Define routes
+		// router.POST("/stock", controller.CreateStock)
+		// router.GET("/stock/:id", controller.GetStock)
+		// router.GET("/stocks", controller.ListStocks)
+		// router.DELETE("/stocks/:id", controller.DeleteStock)
+		// router.PATCH("/stocks/:id", controller.UpdateStock)
+		// router.GET("/stocks/count", controller.CountStocks)
 
 		r.Run(":3036")
 
 
-	// 	// Count จำนวน Ride
-		router.GET("/rides/count", controller.CountRides)
 	
 	 }
 

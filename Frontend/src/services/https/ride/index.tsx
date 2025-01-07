@@ -51,8 +51,8 @@ async function CreateRide(data: RideInterface) {
 
 // services/https/ride/index.ts
 
-async function UpdateRide(data: RideInterface) {
-    const apiUrl = "http://localhost:3036";  // Update with your actual API URL
+async function UpdateRide(id: number | undefined, data: RideInterface) {
+    if (id === undefined) return false;
   
     const requestOptions = {
       method: "PATCH",
@@ -60,21 +60,12 @@ async function UpdateRide(data: RideInterface) {
       body: JSON.stringify(data),
     };
   
-    try {
-      const response = await fetch(`${apiUrl}/rides`, requestOptions);
-  
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-  
-      return response.status === 204 ? true : await response.json();
-    } catch (error) {
-      console.error("Fetch error:", error);
-      return false;
-    }
+    return await fetchData(`${apiUrl}/rides/${id}`, requestOptions);
   }
   
 
+
+  
 
 async function DeleteRideByID(id: number | undefined) {
     if (id === undefined) return false;

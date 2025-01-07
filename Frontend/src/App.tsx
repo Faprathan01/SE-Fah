@@ -5,9 +5,9 @@ import CreateRidePage from './pages/admin/ride/create';
 import EditRidePage from './pages/admin/ride/edit';
 import Ride from './pages/user/ride';
 import Booking from './pages/user/ride/booking';
-import StockPage from './pages/admin/stock';
-import CreateStockPage from './pages/admin/stock/create';
-import EditStockPage from './pages/admin/stock/edit';
+// import StockPage from './pages/admin/stock';
+// import CreateStockPage from './pages/admin/stock/create';
+// import EditStockPage from './pages/admin/stock/edit';
 
 
 function App() {
@@ -18,9 +18,9 @@ function App() {
       <Route path="/editrides/:id" element={<EditRidePage />} />
       <Route path="/homerides" element={<Ride />} />
       <Route path="/booking" element={<Booking />} />
-      <Route path="/stock" element={<StockPage />} />
+      {/* <Route path="/stock" element={<StockPage />} />
       <Route path="/createstock" element={<CreateStockPage />} />
-      <Route path="/editstock/:id" element={<EditStockPage />} />
+      <Route path="/editstock/:id" element={<EditStockPage />} /> */}
     </Routes>
   );
 }

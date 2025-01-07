@@ -4,18 +4,10 @@ import { PlusOutlined, UploadOutlined } from "@ant-design/icons";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useDropzone } from "react-dropzone";
 import Sidebar from "../../../../components/sidebar";
-import { UpdateRide } from "../../../../services/https/ride/index";
 import { InputNumber } from "antd";
-
+import { UpdateRide } from "../../../../services/https/ride";
 
 const { Content } = Layout;
-
-export interface RideInterface {
-  RideName?: string;
-  Description?: string;
-  Capacity?: number;
-  Image?: string;
-}
 
 const EditRidePage: React.FC = () => {
   const { state } = useLocation();
@@ -46,20 +38,11 @@ const EditRidePage: React.FC = () => {
         message.error("Please upload an image!");
         return;
       }
-  
       // สร้างข้อมูลอัปเดต
       const updatedRide = { RideID: ride?.RideID, ...values, Image: image };
-  
-      // ตรวจสอบว่า RideID ตรงกันหรือไม่
-      if (values.RideID && values.RideID !== ride?.RideID) {
-        message.error("Ride ID mismatch! Cannot update the ride.");
-        return;
-      }
-  
       console.log("Updated ride data:", updatedRide);
-  
       // ส่งข้อมูลอัปเดต
-      const success = await UpdateRide(updatedRide);
+      const success = await UpdateRide(ride?.RideID, updatedRide); // เรียกใช้ฟังก์ชัน UpdateRide
       if (success) {
         message.success("Ride updated successfully!");
         form.resetFields();
@@ -71,7 +54,7 @@ const EditRidePage: React.FC = () => {
       console.error("Update error:", error);
       message.error("An error occurred while updating the ride.");
     }
-  }; 
+  };
 
   // ฟังก์ชันสำหรับการอัปโหลดรูปภาพ
   const onDrop = (acceptedFiles: File[]) => {
@@ -118,7 +101,6 @@ const EditRidePage: React.FC = () => {
           <Form
             form={form}
             layout="vertical"
-            onFinish={onFinish}
             style={{
               backgroundColor: "#FFFFFF",
               padding: "20px",
@@ -126,6 +108,7 @@ const EditRidePage: React.FC = () => {
               maxWidth: "800px",
               margin: "0 auto",
             }}
+            onFinish={onFinish} // เพิ่ม onFinish ที่นี่
           >
             <Row gutter={[16, 16]}>
               <Col xs={24} sm={10}>
@@ -183,13 +166,12 @@ const EditRidePage: React.FC = () => {
                   <Input.TextArea rows={3} placeholder="Enter ride description" />
                 </Form.Item>
 
-                
                 <Form.Item
                   label="Capacity"
                   name="Capacity"
                   rules={[{ required: true, message: "Please input the ride capacity!" }]}
-                  >
-                <InputNumber placeholder="Enter ride capacity" style={{ width: "100%" }} />
+                >
+                  <InputNumber placeholder="Enter ride capacity" style={{ width: "100%" }} />
                 </Form.Item>
               </Col>
             </Row>
@@ -197,7 +179,6 @@ const EditRidePage: React.FC = () => {
             <Row justify="end">
               <Button
                 type="primary"
-                htmlType="submit"
                 icon={<PlusOutlined />}
                 style={{
                   backgroundColor: "#FFB703",
@@ -206,6 +187,7 @@ const EditRidePage: React.FC = () => {
                   borderRadius: "8px",
                   marginTop: "20px",
                 }}
+                htmlType="submit" // เพิ่ม htmlType="submit"
               >
                 Save Changes
               </Button>

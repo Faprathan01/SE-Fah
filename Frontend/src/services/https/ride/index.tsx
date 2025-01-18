@@ -49,7 +49,7 @@ async function CreateRide(data: RideInterface) {
     return await fetchData(`${apiUrl}/rides`, requestOptions);
 }
 
-// services/https/ride/index.ts
+
 
 async function UpdateRide(id: number | undefined, data: RideInterface) {
     if (id === undefined) return false;

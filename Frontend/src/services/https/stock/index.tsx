@@ -1,4 +1,4 @@
-import { StockInterface } from "../../../interfaces/IStock"; // Import interface สำหรับ Stock
+import { StockInterface } from "../../../interfaces/IStock";
 
 const apiUrl = "http://localhost:3036";
 
@@ -18,7 +18,7 @@ const fetchData = async (url: string, options: RequestInit) => {
     }
 };
 
-// ฟังก์ชันสำหรับดึงข้อมูลสินค้าทั้งหมด
+// Get all stock items
 async function GetStocks() {
     const requestOptions = {
         method: "GET",
@@ -30,7 +30,7 @@ async function GetStocks() {
     return await fetchData(`${apiUrl}/stocks`, requestOptions);
 }
 
-// ฟังก์ชันสำหรับดึงข้อมูลสินค้าตาม ID
+// Get stock by ID
 async function GetStockById(id: number | undefined) {
     if (id === undefined) return false;
 
@@ -38,10 +38,10 @@ async function GetStockById(id: number | undefined) {
         method: "GET",
     };
 
-    return await fetchData(`${apiUrl}/stocks/${id}`, requestOptions);
+    return await fetchData(`${apiUrl}/stock/${id}`, requestOptions);
 }
 
-// ฟังก์ชันสำหรับสร้างสินค้าใหม่
+// Create new stock item
 async function CreateStock(data: StockInterface) {
     const requestOptions = {
         method: "POST",
@@ -52,18 +52,20 @@ async function CreateStock(data: StockInterface) {
     return await fetchData(`${apiUrl}/stocks`, requestOptions);
 }
 
-// ฟังก์ชันสำหรับอัปเดตข้อมูลสินค้า
-async function UpdateStock(data: StockInterface) {
+// Update stock item
+async function UpdateStock(id: number | undefined, data: StockInterface) {
+    if (id === undefined) return false;
+
     const requestOptions = {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
     };
 
-    return await fetchData(`${apiUrl}/stocks`, requestOptions);
+    return await fetchData(`${apiUrl}/stocks/${id}`, requestOptions);
 }
 
-// ฟังก์ชันสำหรับลบสินค้าตาม ID
+// Delete stock by ID
 async function DeleteStockByID(id: number | undefined) {
     if (id === undefined) return false;
 
@@ -74,7 +76,7 @@ async function DeleteStockByID(id: number | undefined) {
     return await fetchData(`${apiUrl}/stocks/${id}`, requestOptions);
 }
 
-// ฟังก์ชันสำหรับลบสินค้าตามชื่อ
+// Delete stock by name
 async function DeleteStockByName(name: string | undefined) {
     if (name === undefined) return false;
 

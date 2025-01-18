@@ -35,10 +35,9 @@ const RidePage: React.FC = () => {
   }, []);
 
   // Handle editing a ride
-const editRide = (ride: any) => {
-  navigate(`/editrides/${ride.ID}`, { state: { ride } }); // ส่งข้อมูล ride ไปยัง EditRidePage
-};
-
+  const editRide = (ride: any) => {
+    navigate(`/editrides/${ride.ID}`, { state: { ride } });
+  };
 
   // Handle deleting a ride with confirmation
   const deleteRide = (id: string) => {
@@ -51,16 +50,15 @@ const editRide = (ride: any) => {
       onOk: async () => {
         try {
           setLoading(true);
-          // Convert the ID to a number (if applicable)
           const idAsNumber = Number(id);
           if (isNaN(idAsNumber)) {
             message.error("Invalid ID format.");
             return;
           }
-          const success = await DeleteRideByID(idAsNumber); // Pass the numeric ID to the API
+          const success = await DeleteRideByID(idAsNumber);
           if (success) {
             message.success("Ride deleted successfully!");
-            setRides(rides.filter((ride) => ride.ID !== id)); // Remove ride from UI
+            setRides(rides.filter((ride) => ride.ID !== id));
           } else {
             message.error("Failed to delete ride. Please try again.");
           }
@@ -155,6 +153,10 @@ const editRide = (ride: any) => {
                     borderRadius: "12px",
                     overflow: "hidden",
                     boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.15)",
+                    height: "100%", // Ensures cards are equal height
+                    display: "flex",
+                    flexDirection: "column", // Ensures content is aligned vertically
+                    justifyContent: "space-between",
                   }}
                   cover={
                     <img
@@ -172,7 +174,7 @@ const editRide = (ride: any) => {
                 >
                   <div style={{ padding: "12px" }}>
                     <h3 style={{ color: "#005F73", fontWeight: "bold" }}>
-                      {ride.RideName} {/* Make sure 'RideName' matches the API response */}
+                      {ride.RideName}
                     </h3>
                     <p style={{ color: "#6D6875", marginBottom: "8px" }}>
                       {ride.Description}
@@ -193,7 +195,7 @@ const editRide = (ride: any) => {
                           borderRadius: "6px",
                           fontWeight: "bold",
                         }}
-                        onClick={() => editRide(ride)} // Call editRide function
+                        onClick={() => editRide(ride)}
                       >
                         Edit
                       </Button>
@@ -207,7 +209,7 @@ const editRide = (ride: any) => {
                           borderRadius: "6px",
                           fontWeight: "bold",
                         }}
-                        onClick={() => deleteRide(ride.ID)} // Call deleteRide function
+                        onClick={() => deleteRide(ride.ID)}
                       >
                         Delete
                       </Button>

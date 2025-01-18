@@ -27,6 +27,28 @@ func CreateBooking(c *gin.Context) {
 		return
 	}
 
+	// // ตรวจสอบว่า CordID ที่ระบุมีอยู่ในระบบหรือไม่
+	// var ticket entity.Cord
+	// if err := config.DB().First(&Cord, booking.CordID ).Error; err != nil {
+	// 	c.JSON(http.StatusNotFound, gin.H{"error": "Cord not found"})
+	// 	return
+	// }
+
+	// ตรวจสอบจำนวนที่นั่งที่ถูกจองไปแล้วในวันที่และเวลาที่เลือก
+	var bookingCount int64
+	if err := config.DB().Model(&entity.Booking{}).
+		Where("ride_id = ? AND date = ? AND time = ?", booking.RideID, booking.Date, booking.Time).
+		Count(&bookingCount).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	// เช็คว่ามีที่นั่งพอหรือไม่
+	if bookingCount >= int64(ride.Capacity) {
+		c.JSON(http.StatusConflict, gin.H{"error": "No available slots for this ride at the selected date and time"})
+		return
+	}
+
 	// สร้างข้อมูลการจองใหม่
 	newBooking := entity.Booking{
 		TicketID: booking.TicketID,

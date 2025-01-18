@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Layout, Spin, Row, Col, Button } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../../../components/navbar';
-import themeParkImage from '../../../assets/5.jpg';
 import { GetRides } from '../../../services/https/ride';
 import RideCard from '../../../components/RideCard';
 
@@ -40,28 +39,13 @@ const Ride: React.FC = () => {
     <Layout
       className="layout"
       style={{
-        background: 'linear-gradient(to bottom, #57DACC , #FFDAB9)',
+        background: 'linear-gradient(to bottom, #8ECAE6, #FFDAB9)',
         minHeight: '100vh',
         display: 'flex',
         flexDirection: 'column',
       }}
     >
       <Navbar />
-
-      <div style={{ marginTop: '80px' }}>
-        <img
-          src={themeParkImage}
-          alt="Theme Park"
-          style={{
-            width: '100%',
-            maxWidth: '1350px',
-            height: 'auto',
-            objectFit: 'cover',
-            margin: '0 auto',
-            display: 'block',
-          }}
-        />
-      </div>
 
       {loading ? (
         <Spin
@@ -78,7 +62,7 @@ const Ride: React.FC = () => {
           gutter={[16, 24]}
           style={{
             width: '90%',
-            marginTop: '20px',
+            marginTop: '100px', // เพิ่มระยะห่างจาก Navbar
             marginLeft: 'auto',
             marginRight: 'auto',
           }}

@@ -1,65 +1,86 @@
-import React from "react";
-import { Layout, Button, Table, Tooltip, Divider } from "antd";
+import React, { useState, useEffect } from "react";
+import { Layout, Button, Table, Tooltip, Divider, Modal, message } from "antd";
 import Sidebar from "../../../components/sidebar";
 import { Content } from "antd/es/layout/layout";
 import { PlusOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
+import { GetStocks } from "../../../services/https/stock"; // นำเข้า function ที่ดึงข้อมูลจาก API
+import { DeleteStockByID } from "../../../services/https/stock"; // นำเข้า function สำหรับลบสินค้า
+import { StockInterface } from "../../../interfaces/IStock";
 
 const StockPage: React.FC = () => {
-  // Sample data
-  const stockData = [
-    {
-      key: "1",
-      productID: "P001",
-      productName: "Teddy Bear",
-      quantity: 50,
-      price: 250,
-      type: "Souvenir",
-    },
-    {
-      key: "2",
-      productID: "P002",
-      productName: "Soda Can",
-      quantity: 120,
-      price: 20,
-      type: "Drink",
-    },
-    {
-      key: "3",
-      productID: "P003",
-      productName: "Popcorn",
-      quantity: 80,
-      price: 50,
-      type: "Food",
-    },
-  ];
+  const navigate = useNavigate();
+  const [stocks, setStocks] = useState<StockInterface[]>([]); // ระบุประเภทเป็น StockInterface[]
 
-  // Columns for the table
+
+  // ดึงข้อมูลสินค้าจาก API
+  useEffect(() => {
+    const fetchStocks = async () => {
+      const data = await GetStocks();
+      if (data) {
+        setStocks(data); // เก็บข้อมูลลงใน state
+      }
+    };
+
+    fetchStocks();
+  }, []); // ทำงานแค่ครั้งเดียวตอนที่ component โหลดเสร็จ
+
+  // Handle editing a stock item
+  const editStock = (stock: any) => {
+    navigate(`/editstock/${stock.ID}`, { state: { stock } });
+  };
+
+  // Handle deleting a stock item
+  const deleteStock = (id: number) => {
+    Modal.confirm({
+      title: "Are you sure you want to delete this stock?",
+      content: "This action cannot be undone.",
+      okText: "Yes, Delete",
+      okType: "danger",
+      cancelText: "No, Cancel",
+      onOk: async () => {
+        try {
+          const success = await DeleteStockByID(id); // เรียกฟังก์ชันลบสินค้าจาก API
+          if (success) {
+            message.success("Stock deleted successfully!"); // ถ้าลบสำเร็จ
+            setStocks(stocks.filter((stock) => stock.ID !== id)); // ลบสินค้าออกจาก state
+          } else {
+            message.error("Failed to delete stock. Please try again."); // ถ้าลบไม่สำเร็จ
+          }
+        } catch (error) {
+          message.error("An error occurred while deleting the stock."); // หากเกิดข้อผิดพลาด
+        }
+      },
+    });
+  };
+
+  // Modify the columns definition
   const columns = [
     {
-      title: "Product ID",
-      dataIndex: "productID",
-      key: "productID",
+      title: "ลำดับ",
+      dataIndex: "id",
+      key: "id",
+      render: (_: any, record: any, _index: number) => record.ID, // ใช้ `record.ID` เพื่อแสดงลำดับตาม ID
     },
     {
-      title: "Product Name",
-      dataIndex: "productName",
-      key: "productName",
+      title: "ชื่อสินค้า",
+      dataIndex: "ProductName",
+      key: "ProductName",
     },
     {
-      title: "Quantity",
-      dataIndex: "quantity",
-      key: "quantity",
+      title: "จำนวน",
+      dataIndex: "Quantity",
+      key: "Quantity",
     },
     {
-      title: "Price (THB)",
-      dataIndex: "price",
-      key: "price",
-      render: (price: number) => price.toLocaleString(), // Format price
+      title: "ราคา",
+      dataIndex: "Price",
+      key: "Price",
     },
     {
-      title: "Type",
-      dataIndex: "type",
-      key: "type",
+      title: "ประเภทสินค้า",
+      dataIndex: "ProductType",
+      key: "ProductType",
     },
     {
       render: (_text: string, record: any) => (
@@ -68,7 +89,7 @@ const StockPage: React.FC = () => {
             <Button
               type="text"
               icon={<EditOutlined />}
-              onClick={() => console.log(`Edit ${record.productID}`)}
+              onClick={() => editStock(record)} // Call editStock function
               style={{
                 color: "#FFB703",
                 marginRight: 12,
@@ -91,7 +112,7 @@ const StockPage: React.FC = () => {
             <Button
               type="text"
               icon={<DeleteOutlined />}
-              onClick={() => console.log(`Delete ${record.productID}`)}
+              onClick={() => deleteStock(record.ID)} // Call deleteStock function
               style={{
                 color: "#D32F2F",
                 padding: "8px 12px",
@@ -158,9 +179,7 @@ const StockPage: React.FC = () => {
                 boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
                 transition: "all 0.3s ease",
               }}
-              onMouseEnter={(e) => (e.target as HTMLElement).style.backgroundColor = "#FFB703"}
-              onMouseLeave={(e) => (e.target as HTMLElement).style.backgroundColor = "#FFB703"}
-              onClick={() => console.log("Add stock button clicked")}
+              onClick={() => navigate("/createstock")}
             >
               Add Stock
             </Button>
@@ -170,7 +189,7 @@ const StockPage: React.FC = () => {
 
           {/* Stock Table */}
           <Table
-            dataSource={stockData}
+            dataSource={stocks} // ใช้ข้อมูลที่ดึงมาแสดงในตาราง
             columns={columns}
             style={{
               backgroundColor: "#FFFFFF",

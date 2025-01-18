@@ -1,12 +1,40 @@
 import React from "react";
-import { Layout, Form, Input, Button, InputNumber, Select } from "antd";
+import { Layout, Form, Input, Button, InputNumber, Select, message } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 import Sidebar from "../../../../components/sidebar";
+import { CreateStock } from "../../../../services/https/stock";
 
 const { Content } = Layout;
 const { Option } = Select;
 
 const CreateStockPage: React.FC = () => {
+  const [form] = Form.useForm();
+  const navigate = useNavigate(); // Initialize useNavigate
+
+  const handleSubmit = async (values: any) => {
+    try {
+      const data = {
+        
+        ProductName: values.productName,
+        Quantity: values.quantity,
+        Price: values.price,
+        ProductType: values.type,
+      };
+
+      const response = await CreateStock(data);
+      if (response) {
+        message.success("Stock created successfully!");
+        form.resetFields(); // Reset form fields
+        navigate("/stocks"); // Redirect to stocks page
+      } else {
+        message.error("Failed to create stock.");
+      }
+    } catch (error) {
+      message.error("An error occurred while creating stock.");
+    }
+  };
+
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <Sidebar />
@@ -30,7 +58,7 @@ const CreateStockPage: React.FC = () => {
             }}
           >
             <h2 style={{ color: "#2671BC", fontSize: "36px", fontWeight: "bold" }}>
-            Create Product
+              Create Product
             </h2>
           </div>
 
@@ -43,7 +71,9 @@ const CreateStockPage: React.FC = () => {
           />
 
           <Form
+            form={form}
             layout="vertical"
+            onFinish={handleSubmit}
             style={{
               backgroundColor: "#FFFFFF",
               padding: "20px",
@@ -52,7 +82,6 @@ const CreateStockPage: React.FC = () => {
               margin: "0 auto",
             }}
           >
-            {/* Product Name */}
             <Form.Item
               label="Product Name"
               name="productName"
@@ -61,7 +90,6 @@ const CreateStockPage: React.FC = () => {
               <Input placeholder="Enter product name" />
             </Form.Item>
 
-            {/* Quantity */}
             <Form.Item
               label="Quantity"
               name="quantity"
@@ -75,7 +103,6 @@ const CreateStockPage: React.FC = () => {
               />
             </Form.Item>
 
-            {/* Price */}
             <Form.Item
               label="Price"
               name="price"
@@ -89,7 +116,6 @@ const CreateStockPage: React.FC = () => {
               />
             </Form.Item>
 
-            {/* Type */}
             <Form.Item
               label="Type"
               name="type"
@@ -102,7 +128,6 @@ const CreateStockPage: React.FC = () => {
               </Select>
             </Form.Item>
 
-            {/* Create Stock Button */}
             <Form.Item style={{ textAlign: "center" }}>
               <Button
                 type="primary"
@@ -114,6 +139,7 @@ const CreateStockPage: React.FC = () => {
                   padding: "8px 20px",
                 }}
                 icon={<PlusOutlined />}
+                htmlType="submit"
               >
                 Save
               </Button>

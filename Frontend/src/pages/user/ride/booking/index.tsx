@@ -59,8 +59,8 @@ const Booking: React.FC = () => {
         });
       } else {
         notification.error({
-          message: 'เกิดข้อผิดพลาด',
-          description: 'ไม่สามารถบันทึกการจองได้ กรุณาลองใหม่อีกครั้ง',
+          message: 'เกิดข้อผิดพลาด ',
+          description: 'รอบเวลาที่ท่านเลือกเต็มแล้ว กรุณาลองใหม่อีกครั้ง',
           placement: 'topRight',
         });
       }
@@ -83,7 +83,7 @@ const Booking: React.FC = () => {
     <Layout
       className="layout"
       style={{
-        background: 'linear-gradient(to bottom, #57DACC , #FFDAB9)',
+        background: 'linear-gradient(to bottom, #8ECAE6, #FFDAB9)',
         minHeight: '100vh',
         display: 'flex',
         flexDirection: 'row',

@@ -1,12 +1,66 @@
-import React from "react";
-import { Layout, Form, Input, Button, InputNumber, Select } from "antd";
+import React, { useEffect, useState } from "react";
+import { Layout, Form, Input, Button, InputNumber, Select, message } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
+import { useParams, useNavigate } from "react-router-dom";
 import Sidebar from "../../../../components/sidebar";
+import { GetStockById, UpdateStock } from "../../../../services/https/stock"; // Import your API functions
+import { StockInterface } from "../../../../interfaces/IStock";
 
 const { Content } = Layout;
 const { Option } = Select;
 
 const EditStockPage: React.FC = () => {
+  const [form] = Form.useForm(); // Ant Design Form instance
+  const { id } = useParams<{ id: string }>(); // Get stock ID from URL params
+  const [loading, setLoading] = useState(false); // Loading state for API calls
+  const navigate = useNavigate(); // For navigation
+
+  // Fetch old stock data when component mounts
+  useEffect(() => {
+    const fetchStockData = async () => {
+      if (!id) return;
+      setLoading(true);
+      const stock = await GetStockById(Number(id)); // Fetch stock by ID
+      setLoading(false);
+
+      if (stock) {
+        form.setFieldsValue({
+          productName: stock.ProductName,
+          quantity: stock.Quantity,
+          price: stock.Price,
+          type: stock.ProductType,
+        });
+      } else {
+        message.error("Failed to fetch stock data!");
+      }
+    };
+
+    fetchStockData();
+  }, [id, form]);
+
+  // Handle form submission
+  const onFinish = async (values: any) => {
+    if (!id) return;
+    setLoading(true);
+    const updatedStock: StockInterface = {
+      ID: Number(id),
+      ProductName: values.productName,
+      Quantity: values.quantity,
+      Price: values.price,
+      ProductType: values.type,
+    };
+
+    const result = await UpdateStock(Number(id), updatedStock);
+    setLoading(false);
+
+    if (result) {
+      message.success("Stock updated successfully!");
+      navigate("/stocks"); // Navigate to the StockPage after successful update
+    } else {
+      message.error("Failed to update stock!");
+    }
+  };
+
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <Sidebar />
@@ -30,7 +84,7 @@ const EditStockPage: React.FC = () => {
             }}
           >
             <h2 style={{ color: "#2671BC", fontSize: "36px", fontWeight: "bold" }}>
-            Edit Product
+              Edit Product
             </h2>
           </div>
 
@@ -43,7 +97,9 @@ const EditStockPage: React.FC = () => {
           />
 
           <Form
+            form={form}
             layout="vertical"
+            onFinish={onFinish}
             style={{
               backgroundColor: "#FFFFFF",
               padding: "20px",
@@ -102,10 +158,12 @@ const EditStockPage: React.FC = () => {
               </Select>
             </Form.Item>
 
-            {/* Create Stock Button */}
+            {/* Update Stock Button */}
             <Form.Item style={{ textAlign: "center" }}>
               <Button
                 type="primary"
+                htmlType="submit"
+                loading={loading}
                 style={{
                   backgroundColor: "#219EBC",
                   border: "none",
